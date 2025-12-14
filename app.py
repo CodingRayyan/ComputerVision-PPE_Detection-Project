@@ -16,9 +16,11 @@ st.set_page_config(
 # Title and Subtitle
 st.markdown("""
 <div style="text-align: center; padding: 10px; border-bottom: 2px solid #f0f0f0;">
-    <h1 style="color:#00BFFF;">🦺 AI Automated Personal Protective Equipment (PPE) Detection & Tracking System</h1>
+    <h1 style="color:#00BFFF;">🦺 Personal Protective Equipment (PPE) Detection & Tracking System</h1>
+    <h1 style="color:#00BFFF;">   </h1>
+    <h1 style="color:#00BFFF;">🤖 AI Automated</h1>
     <h4 style="color:#FFFF00;">Helmet & Reflective Vest Detection using <strong>YOLOv8s</strong></h4>
-    <p style="color:#FFFF00; font-size:14px;">Developed by <strong>Rayyan Ahmed</strong></p>
+    <p style="color:#FFFF00; font-size:14px;">👩🏻‍💻 Developed by <strong>Rayyan Ahmed</strong></p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -231,6 +233,7 @@ else:
 
 
             
+
 
 
 
