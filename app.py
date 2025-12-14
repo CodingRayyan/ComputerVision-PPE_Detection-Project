@@ -143,16 +143,15 @@ else:
     if uploaded_video:
         import tempfile
         import cv2
-        import os
         import imageio
         import base64
 
-        # Save uploaded video temporarily
+        # ---------------- Save uploaded video to a temp file ---------------- #
         input_video = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4")
         input_video.write(uploaded_video.read())
         input_video.close()
 
-        # ---------------- Original video preview via HTML ---------------- #
+        # ---------------- Original video preview ---------------- #
         st.markdown("### Original Video")
         with open(input_video.name, "rb") as f:
             video_bytes = f.read()
@@ -163,32 +162,29 @@ else:
         </video>
         """, unsafe_allow_html=True)
 
-        x = 1
-
         if st.button("Run Detection"):
             cap = cv2.VideoCapture(input_video.name)
             total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-
-            width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-            height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
             fps = cap.get(cv2.CAP_PROP_FPS)
 
-            # Output MP4 path
-            output_path = os.path.abspath(f"ppe_detected_output_{x}.mp4")
-            x += 1
+            # ---------------- Output video as temp file ---------------- #
+            output_video = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4")
+            output_path = output_video.name
+            output_video.close()
 
             writer = imageio.get_writer(output_path, fps=fps, codec='libx264')
 
-            # Initialize progress bar
+            # ---------------- Progress bar ---------------- #
             progress_text = st.empty()
             progress_bar = st.progress(0)
-
             current_frame = 0
+
             while True:
                 ret, frame = cap.read()
                 if not ret:
                     break
 
+                # Run YOLO detection
                 results = model.predict(frame, conf=0.4, verbose=False)
                 annotated = results[0].plot()
                 annotated_rgb = cv2.cvtColor(annotated, cv2.COLOR_BGR2RGB)
@@ -203,22 +199,25 @@ else:
             writer.close()
 
             st.success("Video detection completed")
-            st.write(f"📁 Saved video path: `{output_path}`")
 
-            # ---------------- Detected video preview via HTML ---------------- #
+            # ---------------- Detected video preview ---------------- #
             st.markdown("### Detected Video")
-            if os.path.exists(output_path):
-                with open(output_path, "rb") as f:
-                    video_bytes = f.read()
-                video_b64 = base64.b64encode(video_bytes).decode()
-                st.markdown(f"""
-                <video width="600" controls>
-                    <source src="data:video/mp4;base64,{video_b64}" type="video/mp4">
-                </video>
-                """, unsafe_allow_html=True)
-                st.success(f"Playing video: {os.path.basename(output_path)}")
-            else:
-                st.error("Detected video file not found.")
+            with open(output_path, "rb") as f:
+                detected_bytes = f.read()
+            detected_b64 = base64.b64encode(detected_bytes).decode()
+            st.markdown(f"""
+            <video width="600" controls>
+                <source src="data:video/mp4;base64,{detected_b64}" type="video/mp4">
+            </video>
+            """, unsafe_allow_html=True)
+
+            # ---------------- Download button for detected video ---------------- #
+            st.download_button(
+                label="📥 Download Detected Video",
+                data=detected_bytes,
+                file_name="ppe_detected.mp4",
+                mime="video/mp4"
+            )
 
 
 
@@ -228,6 +227,7 @@ else:
 
 
             
+
 
 
 
