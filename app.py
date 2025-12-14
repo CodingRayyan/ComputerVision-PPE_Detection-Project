@@ -153,14 +153,17 @@ else:
 
         # ---------------- Original video preview ---------------- #
         st.markdown("### Original Video")
-        with open(input_video.name, "rb") as f:
-            video_bytes = f.read()
-        video_b64 = base64.b64encode(video_bytes).decode()
+        with st.spinner('Preparing video preview, please wait...'):
+            with open(input_video.name, "rb") as f:
+                video_bytes = f.read()
+            video_b64 = base64.b64encode(video_bytes).decode()
+        
         st.markdown(f"""
         <video width="600" controls>
             <source src="data:video/mp4;base64,{video_b64}" type="video/mp4">
         </video>
         """, unsafe_allow_html=True)
+
 
         if st.button("Run Detection"):
             cap = cv2.VideoCapture(input_video.name)
@@ -227,6 +230,7 @@ else:
 
 
             
+
 
 
 
