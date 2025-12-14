@@ -1,0 +1,7 @@
+names:
+- Helmet
+- Vest
+nc: 2
+test: /kaggle/working/datasets/ppe_clean/images/test
+train: /kaggle/working/datasets/ppe_clean/images/train
+val: /kaggle/working/datasets/ppe_clean/images/valid
