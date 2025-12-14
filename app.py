@@ -153,6 +153,7 @@ else:
 
         # ---------------- Original video preview ---------------- #
         st.markdown("### Original Video")
+        st.write("### May take just 10-11 seconds to show up video")
         with st.spinner('Preparing video preview, please wait...'):
             with open(input_video.name, "rb") as f:
                 video_bytes = f.read()
@@ -230,6 +231,7 @@ else:
 
 
             
+
 
 
 
