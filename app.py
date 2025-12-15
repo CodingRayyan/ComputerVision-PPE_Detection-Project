@@ -13,6 +13,9 @@ st.set_page_config(
     layout="centered"
 )
 
+if "video_processing" not in st.session_state:
+    st.session_state.video_processing = False
+
 # Title and Subtitle
 st.markdown("""
 <div style="text-align: center; padding: 10px; border-bottom: 2px solid #f0f0f0;">
@@ -81,11 +84,11 @@ with st.sidebar.expander("🛠️ Tech Stack Used"):
 
 
 # Load model
-@st.cache_resource
 def load_model():
     return YOLO("saved_trained_model.pt")
 
 model = load_model()
+
 
 # Sidebar
 st.sidebar.title("Upload Options")
@@ -119,7 +122,12 @@ if option == "Image":
         </div>
         """, unsafe_allow_html=True)
 
-        if st.button("Run Detection"):
+        if st.button(
+            "Run Detection",
+            disabled=st.session_state.video_processing
+        ):
+            st.session_state.video_processing = True
+
             results = model.predict(image)
             result_img = results[0].plot()
 
@@ -153,6 +161,8 @@ else:
         input_video.write(uploaded_video.read())
         input_video.close()
 
+        st.session_state.video_processing = False
+
         # ---------------- Original video preview ---------------- #
         st.markdown("### Original Video")
         st.write("### May take just 10-11 seconds to show up video")
@@ -168,7 +178,12 @@ else:
         """, unsafe_allow_html=True)
 
 
-        if st.button("Run Detection"):
+        if st.button(
+            "Run Detection",
+            disabled=st.session_state.video_processing
+        ):
+            st.session_state.video_processing = True
+
             cap = cv2.VideoCapture(input_video.name)
             total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
             fps = cap.get(cv2.CAP_PROP_FPS)
@@ -204,6 +219,8 @@ else:
             cap.release()
             writer.close()
 
+            st.session_state.video_processing = False
+
             st.success("Video detection completed")
 
             # ---------------- Detected video preview ---------------- #
@@ -233,6 +250,7 @@ else:
 
 
             
+
 
 
 
